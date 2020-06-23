@@ -24,7 +24,7 @@ public class ContactsApplication {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(info);
+//        System.out.println(info);
 
         contacts = Contact.infoStringsToContacts(info);
 
@@ -32,7 +32,7 @@ public class ContactsApplication {
         viewContacts(contacts);
 
 //        option TWO (add)
-        addContact(infoFile,"Owl | 2105551234");
+        addContact(infoFile,"New Add | 2105551234");
 
 //        option THREE (search)
         String searchFor = "Andrew";
@@ -40,6 +40,9 @@ public class ContactsApplication {
         searchContacts(contacts, searchFor);
 
 //        info = Contact.contactsToInfoStrings(contacts);
+
+//        Option FOUR:
+        removeContact(infoFile, info,"New Add");
 
     }
 
@@ -62,21 +65,36 @@ public class ContactsApplication {
         }
     }
 
-
-    public static void searchContacts(List<Contact> contacts, String searchStr) {
-        String list = "";
-        for(Contact person : contacts) {
-            if (person.getInfo().contains(searchStr)) {
-                list += person.getInfo() + "\n";
+    public static void removeContact(Path a, List<String> info, String str) {
+        List<String> newList = new ArrayList<>();
+        for (String person : info) {
+            if (person.contains(str)) {
+                continue;
             }
+            newList.add(person);
         }
-        if (list.equals("")) {
-            System.out.println(searchStr + " was not found");
-        } else {
-            System.out.println(list);
+        try {
+            Files.write(a, newList);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
 
+        public static void searchContacts(List < Contact > contacts, String searchStr){
+            String list = "";
+            for (Contact person : contacts) {
+                if (person.getInfo().contains(searchStr)) {
+                    list += person.getInfo() + "\n";
+                }
+            }
+            if (list.equals("")) {
+                System.out.println(searchStr + " was not found");
+            } else {
+                System.out.println(list);
+            }
+        }
 
-}
+
+    }
+
