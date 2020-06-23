@@ -2,7 +2,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ContactsApplication {
@@ -29,19 +31,52 @@ public class ContactsApplication {
 //        option ONE
         viewContacts(contacts);
 
+//        option TWO (add)
+        addContact(infoFile,"Owl | 2105551234");
 
+//        option THREE (search)
+        String searchFor = "Andrew";
+//        String searchFor = "Doe"; // find multiple entries
+        searchContacts(contacts, searchFor);
 
-
+//        info = Contact.contactsToInfoStrings(contacts);
 
     }
 
     public static void viewContacts(List<Contact> contacts){
-        String list = "Name       |      Phone number\n";
+        String list = "Name            | Phone number\n";
               list += "------------------------------\n";
         for(Contact person : contacts){
            list += person.getInfo() + "\n";
         }
         System.out.println(list);
     }
+
+
+    public static void addContact(Path a, String str) {
+        List<String> newContact = Arrays.asList(str);
+        try {
+            Files.write(a, newContact, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void searchContacts(List<Contact> contacts, String searchStr) {
+        String list = "";
+        for(Contact person : contacts) {
+            if (person.getInfo().contains(searchStr)) {
+                list += person.getInfo() + "\n";
+            }
+        }
+        if (list.equals("")) {
+            System.out.println(searchStr + " was not found");
+        } else {
+            System.out.println(list);
+        }
+    }
+
+
 
 }
