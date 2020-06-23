@@ -18,12 +18,17 @@ public class ContactsApplication {
 
         List<Contact> contacts;
         List<String> info = new ArrayList<>();
+        try {
+            info = Files.readAllLines(infoFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        contacts = Contact.infoStringsToContacts(info);
 
-
-       loadContacts();
+       loadContacts(contacts, info, infoFile);
 
 //        option ONE
-        viewContacts(loadContacts());
+        viewContacts(contacts);
 
 //        option TWO (add)
 //        addContact(infoFile,"New Add | 2105551234");
@@ -31,28 +36,25 @@ public class ContactsApplication {
 //        option THREE (search)
         String searchFor = "Andrew";
 //        String searchFor = "Doe"; // find multiple entries
-        searchContacts(loadContacts(), searchFor);
+        searchContacts(contacts, searchFor);
 
 //        info = Contact.contactsToInfoStrings(contacts);
 
 //        Option FOUR:
-        removeContact(infoFile, info,"New Add");
+        removeContact(infoFile, info,"Andrew Brought", contacts);
+        viewContacts(contacts);
 
     }
 
-    public static List<Contact> loadContacts(){
-        Path infoFile = Paths.get("src", "contacts.txt");
-        List<Contact> contacts;
-        List<String> info = new ArrayList<>();
+    public static List<Contact> loadContacts(List<Contact> contacts, List<String> info, Path infoFile){
         try {
             info = Files.readAllLines(infoFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        System.out.println(info);
-
-        contacts = Contact.infoStringsToContacts(info);
-        return contacts;
+        List<Contact> contactsRefresh = contacts;
+        contactsRefresh = Contact.infoStringsToContacts(info);
+        return contactsRefresh;
     }
 
 
@@ -67,23 +69,18 @@ public class ContactsApplication {
     }
 
 
-    public static void addContact(Path a, String str) {
+    public static void addContact(Path a, String str, List<Contact> contacts, List<String> info) {
         List<String> newContact = Arrays.asList(str);
         try {
             Files.write(a, newContact, StandardOpenOption.APPEND);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        loadContacts(contacts, info, a);
     }
 
-    public static void removeContact(Path a, List<String> info, String str) {
-//        Path infoFile = Paths.get("src", "contacts.txt");
-//        List<String> info = null;
-//        try {
-//            info = Files.readAllLines(infoFile);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+    public static void removeContact(Path a, List<String> info, String str, List<Contact> contacts) {
+
         List<String> newList = new ArrayList<>();
         for (String person : info) {
             if (person.contains(str)) {
@@ -96,6 +93,7 @@ public class ContactsApplication {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        loadContacts(contacts, info, a);
     }
 
 
