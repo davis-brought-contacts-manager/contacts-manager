@@ -28,7 +28,7 @@ public class ContactsApplication {
        loadContacts(contacts, info, infoFile);
 
 //        option ONE
-        viewContacts(contacts);
+        viewContacts(loadContacts(contacts, info, infoFile));
 
 //        option TWO (add)
 //        addContact(infoFile,"New Add | 2105551234");
@@ -41,8 +41,8 @@ public class ContactsApplication {
 //        info = Contact.contactsToInfoStrings(contacts);
 
 //        Option FOUR:
-        removeContact(infoFile, info,"Andrew Brought", contacts);
-        viewContacts(contacts);
+        removeContact(infoFile, info,"Jack Blank", contacts);
+        viewContacts(loadContacts(contacts, info, infoFile));
 
     }
 
