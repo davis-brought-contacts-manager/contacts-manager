@@ -19,25 +19,19 @@ public class ContactsApplication {
         List<Contact> contacts;
         List<String> info = new ArrayList<>();
 
-        try {
-            info = Files.readAllLines(infoFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        System.out.println(info);
 
-        contacts = Contact.infoStringsToContacts(info);
+       loadContacts();
 
 //        option ONE
-        viewContacts(contacts);
+        viewContacts(loadContacts());
 
 //        option TWO (add)
-        addContact(infoFile,"New Add | 2105551234");
+//        addContact(infoFile,"New Add | 2105551234");
 
 //        option THREE (search)
         String searchFor = "Andrew";
 //        String searchFor = "Doe"; // find multiple entries
-        searchContacts(contacts, searchFor);
+        searchContacts(loadContacts(), searchFor);
 
 //        info = Contact.contactsToInfoStrings(contacts);
 
@@ -46,6 +40,22 @@ public class ContactsApplication {
 
     }
 
+    public static List<Contact> loadContacts(){
+        Path infoFile = Paths.get("src", "contacts.txt");
+        List<Contact> contacts;
+        List<String> info = new ArrayList<>();
+        try {
+            info = Files.readAllLines(infoFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        System.out.println(info);
+
+        contacts = Contact.infoStringsToContacts(info);
+        return contacts;
+    }
+
+
     public static void viewContacts(List<Contact> contacts){
         String list = "Name            | Phone number\n";
               list += "------------------------------\n";
@@ -53,6 +63,7 @@ public class ContactsApplication {
            list += person.getInfo() + "\n";
         }
         System.out.println(list);
+
     }
 
 
@@ -66,6 +77,13 @@ public class ContactsApplication {
     }
 
     public static void removeContact(Path a, List<String> info, String str) {
+//        Path infoFile = Paths.get("src", "contacts.txt");
+//        List<String> info = null;
+//        try {
+//            info = Files.readAllLines(infoFile);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         List<String> newList = new ArrayList<>();
         for (String person : info) {
             if (person.contains(str)) {
