@@ -7,15 +7,12 @@ import java.util.*;
 
 public class ContactsApplication {
 
-
-
     public static void main(String[] args) {
 
 //      define path
         Path infoFile = Paths.get("src", "contacts.txt");
 
 //      variable declarations
-
         List<Contact> contacts;
         List<String> info = new ArrayList<>();
         try {
@@ -26,10 +23,9 @@ public class ContactsApplication {
         contacts = Contact.infoStringsToContacts(info);
 
 
-
-
+//        load (refresh) list of contacts
        loadContacts(contacts, info, infoFile);
-        Scanner input = new Scanner(System.in);
+       Scanner input = new Scanner(System.in).useDelimiter("\n");
        String keepLooping = "y";
        do{
            System.out.println("1. View contacts.");
@@ -39,42 +35,88 @@ public class ContactsApplication {
            System.out.println("5. Exit.");
            System.out.println("Enter an option (1, 2, 3, 4 or 5):");
            int userNumber = input.nextInt();
-           String str = input.nextLine();
 
            switch(userNumber){
                case 1:
-                   //        option ONE
+                   //        option ONE (view)
                    viewContacts(loadContacts(contacts, info, infoFile));
-                   System.out.println("Would you like to continue?");
+                   System.out.println("Would you like to continue? (y/n): ");
                    keepLooping = input.next();
                    break;
                case 2:
-                   //        option TWO (add)
-                   System.out.println("Please enter a new contact");
-                   addContact(infoFile, str, contacts, info);
-
+                    //        option TWO (add)
+                   do {
+                       System.out.println("Please enter a new contact name and phone number (John Doe | 2105551234): ");
+                       String str = input.next();
+                       String justTheName = str.substring(0,str.indexOf("|"));
+                       System.out.println(justTheName);
+                       boolean found = searchContacts(contacts, justTheName).contains(justTheName.trim());
+                       System.out.println(found);
+                       if (found) {
+                           System.out.println("There's already a contact named " + justTheName + ". Do you want to overwrite it? (y/n):");
+                           String overwrite = input.next();
+                           if (overwrite.equals("y")) {
+                               removeContact(infoFile, info, justTheName, contacts);
+                               addContact(infoFile, str, contacts, info);
+                               loadContacts(contacts, info, infoFile);
+                           }
+                       } else {
+                           System.out.println(str);
+                           addContact(infoFile, str, contacts, info);
+                           loadContacts(contacts, info, infoFile);
+                       }
+                       System.out.println("Would you like to enter another new contact? (y/n): ");
+                       keepLooping = input.next();
+                   } while (keepLooping.equals("y"));
+                   keepLooping = "y";
+                   break;
+               case 3:
+                   //        option THREE (search)
+                   loadContacts(contacts, info, infoFile);
+                   do {
+                       System.out.println("Please enter a contact name to search for: ");
+                       String searchStr = input.next();
+                       String searchResult = searchContacts(contacts, searchStr);
+                       System.out.println(searchResult);
+                       if (searchResult.equals("")) {
+                           System.out.println(searchStr + " was not found.");
+                       } else {
+                           System.out.println(searchResult);
+                       }
+                       System.out.println("Would you like to search for another contact? (y/n): ");
+                       keepLooping = input.next();
+                   } while (keepLooping.equals("y"));
+                   keepLooping = "y";
+                   break;
+               case 4:
+                   //        Option FOUR (delete)
+                   do {
+                       System.out.println("Please enter a contact name to delete: ");
+                       String searchStr = input.next();
+                       removeContact(infoFile, info, searchStr, contacts);
+                       System.out.println("Would you like to delete another contact? (y/n): ");
+                       keepLooping = input.next();
+                   } while (keepLooping.equals("y"));
+                   keepLooping = "y";
+                   break;
+               case 5:
+                   System.out.println("Bye!");
+                   keepLooping = "n";
+                   break;
+               default:
+                   System.out.println("Please enter one of the options.");
+                   keepLooping = "y";
            }
-
        }while(keepLooping.equalsIgnoreCase("y"));
 
 
-
-
-//        option TWO (add)
-//        addContact(infoFile,"New Add | 2105551234");
-
-//        option THREE (search)
-        String searchFor = "Andrew";
-//        String searchFor = "Doe"; // find multiple entries
-        searchContacts(contacts, searchFor);
-
+//      This method is not currently used since we are updating the text file after making changes
+//        But keeping the reference for possible refactoring
 //        info = Contact.contactsToInfoStrings(contacts);
 
-//        Option FOUR:
-        removeContact(infoFile, info,"Jack Blank", contacts);
-        viewContacts(loadContacts(contacts, info, infoFile));
 
-    }
+
+    } // end of main
 
     public static List<Contact> loadContacts(List<Contact> contacts, List<String> info, Path infoFile){
         try {
@@ -127,7 +169,7 @@ public class ContactsApplication {
     }
 
 
-        public static void searchContacts(List < Contact > contacts, String searchStr){
+        public static String searchContacts(List < Contact > contacts, String searchStr){
             String list = "";
             for (Contact person : contacts) {
                 if (person.getInfo().contains(searchStr)) {
@@ -135,9 +177,9 @@ public class ContactsApplication {
                 }
             }
             if (list.equals("")) {
-                System.out.println(searchStr + " was not found");
+                return list;
             } else {
-                System.out.println(list);
+                return list;
             }
         }
 
