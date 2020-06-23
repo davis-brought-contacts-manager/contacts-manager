@@ -3,11 +3,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ContactsApplication {
+
+
 
     public static void main(String[] args) {
 
@@ -25,10 +25,40 @@ public class ContactsApplication {
         }
         contacts = Contact.infoStringsToContacts(info);
 
-       loadContacts(contacts, info, infoFile);
 
-//        option ONE
-        viewContacts(loadContacts(contacts, info, infoFile));
+
+
+       loadContacts(contacts, info, infoFile);
+        Scanner input = new Scanner(System.in);
+       String keepLooping = "y";
+       do{
+           System.out.println("1. View contacts.");
+           System.out.println("2. Add a new contact.");
+           System.out.println("3. Search a contact by name.");
+           System.out.println("4. Delete an existing contact.");
+           System.out.println("5. Exit.");
+           System.out.println("Enter an option (1, 2, 3, 4 or 5):");
+           int userNumber = input.nextInt();
+           String str = input.nextLine();
+
+           switch(userNumber){
+               case 1:
+                   //        option ONE
+                   viewContacts(loadContacts(contacts, info, infoFile));
+                   System.out.println("Would you like to continue?");
+                   keepLooping = input.next();
+                   break;
+               case 2:
+                   //        option TWO (add)
+                   System.out.println("Please enter a new contact");
+                   addContact(infoFile, str, contacts, info);
+
+           }
+
+       }while(keepLooping.equalsIgnoreCase("y"));
+
+
+
 
 //        option TWO (add)
 //        addContact(infoFile,"New Add | 2105551234");
