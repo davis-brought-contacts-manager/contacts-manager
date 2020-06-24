@@ -49,9 +49,9 @@ public class ContactsApplication {
                        System.out.println("Please enter a new contact name and phone number (John Doe | 2105551234): ");
                        String str = input.next();
                        String justTheName = str.substring(0,str.indexOf("|"));
-                       System.out.println(justTheName);
+//                       System.out.println(justTheName);  //
                        boolean found = searchContacts(contacts, justTheName).contains(justTheName.trim());
-                       System.out.println(found);
+//                       System.out.println(found);  //
                        if (found) {
                            System.out.println("There's already a contact named " + justTheName + ". Do you want to overwrite it? (y/n):");
                            String overwrite = input.next();
@@ -59,13 +59,14 @@ public class ContactsApplication {
                                removeContact(infoFile, info, justTheName, contacts);
                                addContact(infoFile, str, contacts, info);
                                loadContacts(contacts, info, infoFile);
+                               System.out.println(str + " has been added"); //
                            }
                        } else {
-                           System.out.println(str);
+                           System.out.println(str + " has been added"); //
                            addContact(infoFile, str, contacts, info);
                            loadContacts(contacts, info, infoFile);
                        }
-                       System.out.println("Would you like to enter another new contact? (y/n): ");
+                       System.out.println("Would you like to add another new contact? (y/n): ");
                        keepLooping = input.next();
                    } while (keepLooping.equals("y"));
                    keepLooping = "y";
@@ -73,11 +74,12 @@ public class ContactsApplication {
                case 3:
                    //        option THREE (search)
                    loadContacts(contacts, info, infoFile);
+
                    do {
                        System.out.println("Please enter a contact name to search for: ");
                        String searchStr = input.next();
-                       String searchResult = searchContacts(contacts, searchStr);
-                       System.out.println(searchResult);
+                       String searchResult = searchContacts(loadContacts(contacts, info, infoFile), searchStr); //
+//                       System.out.println(searchResult);  //
                        if (searchResult.equals("")) {
                            System.out.println(searchStr + " was not found.");
                        } else {
@@ -93,7 +95,9 @@ public class ContactsApplication {
                    do {
                        System.out.println("Please enter a contact name to delete: ");
                        String searchStr = input.next();
+                       String searchResult = searchContacts(loadContacts(contacts, info, infoFile), searchStr);  //
                        removeContact(infoFile, info, searchStr, contacts);
+                       System.out.println(searchResult + "Has been removed.");  //
                        System.out.println("Would you like to delete another contact? (y/n): ");
                        keepLooping = input.next();
                    } while (keepLooping.equals("y"));
